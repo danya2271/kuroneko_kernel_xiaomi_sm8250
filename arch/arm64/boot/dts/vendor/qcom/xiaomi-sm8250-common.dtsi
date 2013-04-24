@@ -283,10 +283,10 @@
 		wf_0 {
 			/*CLICK*/
 			qcom,effect-id = <0>;
-			qcom,wf-vmax-mv = <3600>;
+			qcom,wf-vmax-mv = <4300>;
 			qcom,wf-pattern = [3e 3e];
 			qcom,wf-brake-pattern = [02 01 00 00];
-			qcom,wf-play-rate-us = <20000>;
+			qcom,wf-play-rate-us = <15000>;
 		};
 		wf_1 {
 			/*DOUBLE CLICK*/
@@ -299,10 +299,10 @@
 		wf_2 {
 			/*TICK*/
 			qcom,effect-id = <2>;
-			qcom,wf-vmax-mv = <3600>;
+			qcom,wf-vmax-mv = <4200>;
 			qcom,wf-pattern = [7e 3e];
 			qcom,wf-brake-pattern = [02 01 00 00];
-			qcom,wf-play-rate-us = <20000>;
+			qcom,wf-play-rate-us = <18000>;
 		};
 		wf_3 {
 			/*THUD*/
@@ -323,10 +323,10 @@
 		wf_5 {
 			/*HEAVY CLICK*/
 			qcom,effect-id = <5>;
-			qcom,wf-vmax-mv = <3600>;
+			qcom,wf-vmax-mv = <4600>;
 			qcom,wf-pattern = [7e 7e 7e];
 			qcom,wf-brake-pattern = [03 03 01 00];
-			qcom,wf-play-rate-us = <20000>;
+			qcom,wf-play-rate-us = <15000>;
 		};
 		wf_6 {
 			/*id 6*/

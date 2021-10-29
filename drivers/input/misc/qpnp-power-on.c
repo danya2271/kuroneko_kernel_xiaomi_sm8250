@@ -1192,25 +1192,6 @@ static void collect_d_work_func(struct work_struct *work)
 		container_of(work, struct qpnp_pon, collect_d_work.work);
 	struct qpnp_pon_config *cfg = NULL;
 
-	volp_scan = !pmic_gpio_get_external("c440000.qcom,spmi:qcom,pm8150@0:pinctrl@c000", 2);
-
-	/* Scan volp to decide whether to enable k_r S2 reset */
-	cfg = qpnp_get_cfg(pon, PON_KPDPWR_RESIN);
-	if (cfg != NULL) {
-		if(volp_scan == 1) {
-			// enable
-			qpnp_pon_masked_write(pon, cfg->s2_cntl2_addr,
-					QPNP_PON_S2_CNTL_EN, QPNP_PON_S2_CNTL_EN);
-			printk(KERN_ERR "3-combo-keys detected, enable s2 reset\n");
-		} else {
-			// disable
-			qpnp_pon_masked_write(pon, cfg->s2_cntl2_addr,
-					QPNP_PON_S2_CNTL_EN, 0);
-			printk(KERN_ERR "volp key not detected, disable s2 reset\n");
-			goto err_return;
-		}
-	}
-
 	/* check the RT status to get the current status of the line */
 	rc = regmap_read(pon->regmap, QPNP_PON_RT_STS(pon), &pon_rt_sts);
 	if (rc) {

@@ -107,9 +107,9 @@ module_param_named(sleep_disabled_dev, sleep_disabled_dev, bool, 0664);
  *
  * Returns an s32 latency value
  */
-inline s32 msm_cpuidle_get_deep_idle_latency(void)
+s32 msm_cpuidle_get_deep_idle_latency(void)
 {
-	return 100;
+	return 10;
 }
 EXPORT_SYMBOL(msm_cpuidle_get_deep_idle_latency);
 
@@ -133,7 +133,7 @@ uint32_t register_system_pm_ops(struct system_pm_ops *pm_ops)
 #define EVENT_INPUT 0x1
 #define EVENT_FCAM  0x2
 #define EVENT_SUM   0x2
-static unsigned long lpm_dev_bitmp = 0;
+static unsigned long lpm_dev_bitmp;
 
 void lpm_disable_for_dev(bool on, char event_dev)
 {
@@ -157,7 +157,7 @@ EXPORT_SYMBOL(lpm_disable_for_dev);
 #else
 void lpm_disable_for_dev(bool on, char event_dev)
 {
-	return;
+	// Do nothing
 }
 EXPORT_SYMBOL(lpm_disable_for_dev);
 #endif
@@ -350,7 +350,7 @@ static void histtimer_start(uint32_t time_us)
 	struct hrtimer *cpu_histtimer = &per_cpu(histtimer, cpu);
 
 	cpu_histtimer->function = histtimer_fn;
-	hrtimer_start(cpu_histtimer, hist_ktime, HRTIMER_MODE_REL_PINNED_SOFT);
+	hrtimer_start(cpu_histtimer, hist_ktime, HRTIMER_MODE_REL_PINNED);
 }
 
 static void cluster_timer_init(struct lpm_cluster *cluster)
@@ -360,8 +360,7 @@ static void cluster_timer_init(struct lpm_cluster *cluster)
 	if (!cluster)
 		return;
 
-	hrtimer_init(&cluster->histtimer, CLOCK_MONOTONIC,
-		     HRTIMER_MODE_REL_SOFT);
+	hrtimer_init(&cluster->histtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 
 	list_for_each(list, &cluster->child) {
 		struct lpm_cluster *n;
@@ -408,7 +407,7 @@ static void clusttimer_start(struct lpm_cluster *cluster, uint32_t time_us)
 
 	cluster->histtimer.function = clusttimer_fn;
 	hrtimer_start(&cluster->histtimer, clust_ktime,
-		      HRTIMER_MODE_REL_PINNED_SOFT);
+				HRTIMER_MODE_REL_PINNED);
 }
 
 static void msm_pm_set_timer(uint32_t modified_time_us)
@@ -445,7 +444,7 @@ static void biastimer_start(uint32_t time_ns)
 	struct hrtimer *cpu_biastimer = &per_cpu(biastimer, cpu);
 
 	cpu_biastimer->function = biastimer_fn;
-	hrtimer_start(cpu_biastimer, bias_ktime, HRTIMER_MODE_REL_PINNED_SOFT);
+	hrtimer_start(cpu_biastimer, bias_ktime, HRTIMER_MODE_REL_PINNED);
 }
 
 static uint64_t find_deviation(int *interval, uint32_t ref_stddev,
@@ -709,7 +708,7 @@ static int cpu_power_select(struct cpuidle_device *dev,
 		min_residency = pwr_params->min_residency;
 		max_residency = pwr_params->max_residency;
 
-		if (latency_us < lvl_latency_us)
+		if (latency_us <= lvl_latency_us)
 			break;
 
 		calculate_next_wakeup(&next_wakeup_us, next_event_us,
@@ -1001,6 +1000,26 @@ static void clear_cl_predict_history(void)
 	}
 }
 
+static int cluster_select_deepest(struct lpm_cluster *cluster)
+{
+	int i;
+
+	for (i = cluster->nlevels - 1; i >= 0; i--) {
+		struct lpm_cluster_level *level = &cluster->levels[i];
+
+		if (level->notify_rpm) {
+			if (!(sys_pm_ops && sys_pm_ops->sleep_allowed))
+				continue;
+			if (!sys_pm_ops->sleep_allowed())
+				continue;
+		}
+
+		break;
+	}
+
+	return i;
+}
+
 static int cluster_select(struct lpm_cluster *cluster, bool from_idle,
 							int *ispred)
 {
@@ -1014,6 +1033,8 @@ static int cluster_select(struct lpm_cluster *cluster, bool from_idle,
 
 	if (!cluster)
 		return -EINVAL;
+
+	return cluster_select_deepest(cluster);
 
 	sleep_us = (uint32_t)get_cluster_sleep_time(cluster,
 						from_idle, &cpupred_us);
@@ -1046,7 +1067,7 @@ static int cluster_select(struct lpm_cluster *cluster, bool from_idle,
 					&level->num_cpu_votes))
 			continue;
 
-		if (from_idle && latency_us < pwr_params->exit_latency)
+		if (from_idle && latency_us <= pwr_params->exit_latency)
 			break;
 
 		if (sleep_us < (pwr_params->exit_latency +
@@ -1374,7 +1395,7 @@ static bool psci_enter_sleep(struct lpm_cpu *cpu, int idx, bool from_idle)
 }
 
 static int lpm_cpuidle_select(struct cpuidle_driver *drv,
-		struct cpuidle_device *dev)
+		struct cpuidle_device *dev, bool *stop_tick)
 {
 	struct lpm_cpu *cpu = per_cpu(cpu_lpm, dev->cpu);
 
@@ -1780,11 +1801,9 @@ static int lpm_probe(struct platform_device *pdev)
 	hrtimer_init(&lpm_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	for_each_possible_cpu(cpu) {
 		cpu_histtimer = &per_cpu(histtimer, cpu);
-		hrtimer_init(cpu_histtimer, CLOCK_MONOTONIC,
-			     HRTIMER_MODE_REL_SOFT);
+		hrtimer_init(cpu_histtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 		cpu_histtimer = &per_cpu(biastimer, cpu);
-		hrtimer_init(cpu_histtimer, CLOCK_MONOTONIC,
-			     HRTIMER_MODE_REL_SOFT);
+		hrtimer_init(cpu_histtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	}
 
 	cluster_timer_init(lpm_root_node);
@@ -1816,6 +1835,8 @@ static int lpm_probe(struct platform_device *pdev)
 		pr_err("Failed to create cluster level nodes\n");
 		goto failed;
 	}
+
+	set_update_ipi_history_callback(update_ipi_history);
 
 	return 0;
 failed:

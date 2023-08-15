@@ -185,9 +185,9 @@ static void spi_clock_set(struct gf_dev *gf_dev, int speed)
 	rc = clk_set_rate(gf_dev->core_clk, rate);
 }
 
-static int gfspi_ioctl_clk_init(struct gf_dev *data)
+static inline int gfspi_ioctl_clk_init(struct gf_dev *data)
 {
-	pr_debug("%s: enter\n", __func__);
+//	pr_debug("%s: enter\n", __func__);
 	data->clk_enabled = 0;
 	data->core_clk = clk_get(&data->spi->dev, "core_clk");
 
@@ -208,10 +208,10 @@ static int gfspi_ioctl_clk_init(struct gf_dev *data)
 	return 0;
 }
 
-static int gfspi_ioctl_clk_enable(struct gf_dev *data)
+static inline int gfspi_ioctl_clk_enable(struct gf_dev *data)
 {
 	int err;
-	pr_debug("%s: enter\n", __func__);
+//	pr_debug("%s: enter\n", __func__);
 
 	if (data->clk_enabled) {
 		return 0;
@@ -236,9 +236,9 @@ static int gfspi_ioctl_clk_enable(struct gf_dev *data)
 	return 0;
 }
 
-static int gfspi_ioctl_clk_disable(struct gf_dev *data)
+static inline int gfspi_ioctl_clk_disable(struct gf_dev *data)
 {
-	pr_debug("%s: enter\n", __func__);
+//	pr_debug("%s: enter\n", __func__);
 
 	if (!data->clk_enabled) {
 		return 0;
@@ -250,9 +250,9 @@ static int gfspi_ioctl_clk_disable(struct gf_dev *data)
 	return 0;
 }
 
-static int gfspi_ioctl_clk_uninit(struct gf_dev *data)
+static inline int gfspi_ioctl_clk_uninit(struct gf_dev *data)
 {
-	pr_debug("%s: enter\n", __func__);
+//	pr_debug("%s: enter\n", __func__);
 
 	if (data->clk_enabled) {
 		gfspi_ioctl_clk_disable(data);
@@ -339,7 +339,7 @@ static void nav_event_input(struct gf_dev *gf_dev, gf_nav_event_t nav_event)
 }
 
 
-static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
+static inline void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
 {
 	uint32_t key_input = 0;
 
@@ -354,8 +354,8 @@ static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
 		key_input = gf_key->key;
 	}
 
-	pr_debug("%s: received key event[%d], key=%d, value=%d\n",
-		 __func__, key_input, gf_key->key, gf_key->value);
+//	pr_debug("%s: received key event[%d], key=%d, value=%d\n",
+//		 __func__, key_input, gf_key->key, gf_key->value);
 
 	if ((GF_KEY_POWER == gf_key->key || GF_KEY_CAMERA == gf_key->key)
 		&& (gf_key->value == 1)) {
@@ -366,7 +366,7 @@ static void gf_kernel_key_input(struct gf_dev *gf_dev, struct gf_key *gf_key)
 	}
 
 	if (GF_KEY_HOME == gf_key->key) {
-		pr_debug("%s GF_KEY_HOME_enter\n", __func__);
+//		pr_debug("%s GF_KEY_HOME_enter\n", __func__);
 		if ((gf_dev->key_flag == 1) && (gf_key->value == 1)) {
 			pr_debug("%s add up\n", __func__);
 			input_report_key(gf_dev->input, key_input, 0);
@@ -560,13 +560,12 @@ static void notification_work(struct work_struct *work)
 }
 #endif
 
-static irqreturn_t gf_irq(int irq, void *handle)
+static inline irqreturn_t gf_irq(int irq, void *handle)
 {
 	struct gf_dev *gf_dev = &gf;
 #if defined(GF_NETLINK_ENABLE)
 	char temp[4] = { 0x0 };
 	temp[0] = GF_NET_EVENT_IRQ;
-	pr_debug("%s enter\n", __func__);
 	__pm_wakeup_event(fp_wakelock, WAKELOCK_HOLD_TIME);
 	sendnlmsg(temp);
 
@@ -589,7 +588,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
 	return IRQ_HANDLED;
 }
 
-static int gf_open(struct inode *inode, struct file *filp)
+static inline int gf_open(struct inode *inode, struct file *filp)
 {
 	struct gf_dev *gf_dev;
 	int status = -ENXIO;

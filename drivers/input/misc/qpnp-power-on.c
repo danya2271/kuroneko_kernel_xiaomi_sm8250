@@ -1190,7 +1190,6 @@ static void collect_d_work_func(struct work_struct *work)
 	uint pon_rt_sts = 0;
 	struct qpnp_pon *pon =
 		container_of(work, struct qpnp_pon, collect_d_work.work);
-	bool volp_scan = 0;
 	struct qpnp_pon_config *cfg = NULL;
 
 	volp_scan = !pmic_gpio_get_external("c440000.qcom,spmi:qcom,pm8150@0:pinctrl@c000", 2);

@@ -2719,15 +2719,6 @@ static const struct seq_operations fib_route_seq_ops = {
 
 int __net_init fib_proc_init(struct net *net)
 {
-	if (!IS_ENABLED(CONFIG_PROC_STRIPPED) &&
-		!proc_create("fib_trie", S_IRUGO, net->proc_net, &fib_trie_fops))
-		goto out1;
-
-	if (!IS_ENABLED(CONFIG_PROC_STRIPPED) &&
-		!proc_create("fib_triestat", S_IRUGO, net->proc_net,
-			 &fib_triestat_fops))
-		goto out2;
-
 	if (!proc_create_net("route", 0444, net->proc_net, &fib_route_seq_ops,
 			sizeof(struct fib_route_iter)))
 		goto out3;

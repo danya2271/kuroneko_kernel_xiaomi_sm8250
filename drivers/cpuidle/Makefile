@@ -2,7 +2,7 @@
 #
 # Makefile for cpuidle.
 #
-
+KBUILD_CFLAGS += -Wno-incompatible-function-pointer-types
 obj-y += cpuidle.o driver.o governor.o sysfs.o governors/
 obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
 obj-$(CONFIG_DT_IDLE_STATES)		  += dt_idle_states.o

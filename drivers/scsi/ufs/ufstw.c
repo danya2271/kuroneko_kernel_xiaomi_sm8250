@@ -1614,7 +1614,7 @@ bool ufstw_disable_lpm(struct ufsf_feature *ufsf)
 			continue;
 
 		if (ufstw_disable_lpm_needed(tw)) {
-			disable_lpm = true;
+			disable_lpm = false;
 			INFO_MSG("ABS(%d/%d) disable lpm",
 					tw->tw_available_buffer_size,
 					UFSTW_AVAIL_BUF_SIZE_DISABLE_LPM);

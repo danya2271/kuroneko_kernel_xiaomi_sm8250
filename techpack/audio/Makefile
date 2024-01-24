@@ -1,4 +1,5 @@
 # auto-detect subdirs
+KBUILD_CFLAGS+= -Wno-unused-variable
 ifeq ($(CONFIG_ARCH_SDXPOORWILLS), y)
 include $(srctree)/techpack/audio/config/sdxpoorwillsauto.conf
 export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/sdxpoorwillsauto.conf)

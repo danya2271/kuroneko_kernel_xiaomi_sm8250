@@ -642,6 +642,7 @@ skip_dimlayer_parse:
 
 void display_utc_time_marker(const char *format, ...)
 {
+#ifdef CONFIG_DEBUG
 	struct timespec ts;
 	struct rtc_time tm;
 	struct va_format vaf;
@@ -661,6 +662,7 @@ void display_utc_time_marker(const char *format, ...)
 			&vaf);
 
 	va_end(args);
+#endif
 }
 
 int dsi_panel_esd_irq_ctrl(struct dsi_panel *panel,

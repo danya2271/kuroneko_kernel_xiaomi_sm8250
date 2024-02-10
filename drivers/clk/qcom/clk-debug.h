@@ -86,10 +86,10 @@ struct clk_debug_mux {
 
 extern const struct clk_ops clk_debug_mux_ops;
 
-int clk_debug_measure_register(struct clk_hw *hw);
-void clk_debug_measure_add(struct clk_hw *hw, struct dentry *dentry);
-void clk_debug_bus_vote(struct clk_hw *hw, bool enable);
-int map_debug_bases(struct platform_device *pdev, const char *base,
-		    struct clk_debug_mux *mux);
+static inline int clk_debug_measure_register(struct clk_hw *hw) {return 0;};
+static inline void clk_debug_measure_add(struct clk_hw *hw, struct dentry *dentry) {};
+static inline void clk_debug_bus_vote(struct clk_hw *hw, bool enable) {};
+static inline int map_debug_bases(struct platform_device *pdev, const char *base,
+		    struct clk_debug_mux *mux) {return 0;};
 
 #endif

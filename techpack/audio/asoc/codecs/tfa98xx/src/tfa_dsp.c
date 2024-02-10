@@ -19,13 +19,14 @@
 #include "tfa.h"
 #include "tfa98xx_tfafieldnames.h"
 #include "tfa_internal.h"
-
+/*
 #ifdef __KERNEL__
 	#ifdef pr_fmt
 	#undef pr_fmt
 	#endif
 	#define pr_fmt(fmt) "%s(): " fmt, __func__
 #endif
+*/
 /* handle macro for bitfield */
 #define TFA_MK_BF(reg, pos, len) ((reg<<8)|(pos<<4)|(len-1))
 

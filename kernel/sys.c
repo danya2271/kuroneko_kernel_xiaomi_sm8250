@@ -22,6 +22,7 @@
 #include <linux/device.h>
 #include <linux/key.h>
 #include <misc/lyb_taskmmu.h>
+#include <linux/devfreq_boost.h>
 #include <linux/times.h>
 #include <linux/posix-timers.h>
 #include <linux/security.h>
@@ -2497,8 +2498,6 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 				break;
 			}
 		}
-		memset(CmdlineBuffer, 0, sizeof(CmdlineBuffer));
-		get_cmdline(me, CmdlineBuffer, sizeof(CmdlineBuffer) - 1);
 		// Check the optimized apps list - danya2271
 		for (x = 0; x < szOptimApps; ++x)
 		{
@@ -2506,13 +2505,10 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 			{
 					printk(KERN_NOTICE "\"%s\" is found to be a optimized application" "\"%s\", activating sultan memory optimization...\n", comm, me->comm);
 					lyb_sultan_pid = true;
-					lyb_sultan_pid_shrink = true;
-					struct kernel_param kp;
+					devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 5000);
 					break;
-			} else {
+			} else if (x == szOptimApps) {
 					lyb_sultan_pid = false;
-					lyb_sultan_pid_shrink = false;
-					struct kernel_param kp;
 					break;
 			}
 		}

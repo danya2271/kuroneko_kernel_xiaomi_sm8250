@@ -80,10 +80,10 @@ int suid_dumpable = 0;
 // to improve their performance. - danya2271
 const char *OptimApps[] =
 {
-	"com.miHoYo.GenshinImpact",
-	"org.yuzu.yuzu_emu",
 	"com.carxtech.sr",
-	"carxtech",
+	"com.miHoYo.GenshinImpact",
+	"gaijin.crossout",
+	"org.yuzu.yuzu_emu",
 	"com.termux.x11"
 };
 const size_t szOptimApps = sizeof(OptimApps) / sizeof(*OptimApps);
@@ -117,7 +117,6 @@ const char *BannedApps[] =
 	"com.xiaomi.mtb",
 	"millet_monitorSIG",
 	"millet_monitorBINDER",
-	"com.google.android.partnersetup",
 	"ru.nspk.mirpay:AppMetrica",
 	"com.avito.android:Metrica",
 	"ip6tables-restore—noflush-w-v"

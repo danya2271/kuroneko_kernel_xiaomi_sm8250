@@ -212,7 +212,6 @@
 &vendor {
 	kona_xrfusion_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "fg-gen4-batterydata-goertek-6100mah.dtsi"
 	};
 };
 

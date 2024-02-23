@@ -128,7 +128,6 @@
 &vendor {
 	kona_arglass_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "fg-gen4-batterydata-goertek-650mah.dtsi"
 	};
 };
 

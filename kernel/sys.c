@@ -23,6 +23,7 @@
 #include <linux/key.h>
 #include <misc/lyb_taskmmu.h>
 #include <linux/devfreq_boost.h>
+#include <linux/delay.h>
 #include <linux/times.h>
 #include <linux/posix-timers.h>
 #include <linux/security.h>
@@ -2503,13 +2504,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 		{
 			if (unlikely(strstr(comm, OptimApps[x])) || unlikely(strstr(me->comm, OptimApps[x])) || unlikely(strstr(CmdlineBuffer, OptimApps[x])))
 			{
-					printk(KERN_NOTICE "\"%s\" is found to be a optimized application" "\"%s\", activating sultan memory optimization...\n", comm, me->comm);
+					//printk(KERN_NOTICE "\"%s\" is found to be a optimized application" "\"%s\", activating sultan memory optimization...\n", comm, me->comm);
 					lyb_sultan_pid = true;
-					devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 5000);
+					devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 10000);
 					break;
-			} else if (x == szOptimApps) {
+			} else {
 					lyb_sultan_pid = false;
-					break;
 			}
 		}
 		set_task_comm(me, comm);

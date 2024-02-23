@@ -82,9 +82,7 @@ const char *OptimApps[] =
 {
 	"com.carxtech.sr",
 	"com.miHoYo.GenshinImpact",
-	"gaijin.crossout",
-	"org.yuzu.yuzu_emu",
-	"com.termux.x11"
+	"org.yuzu.yuzu_emu"
 };
 const size_t szOptimApps = sizeof(OptimApps) / sizeof(*OptimApps);
 // Export these symbols so the rest of our code can find it.
@@ -97,19 +95,8 @@ EXPORT_SYMBOL(szOptimApps);
 const char *BannedApps[] =
 {
 	"com.android.adservices.api",
-	"atrace",
+	"Metrica",
 	"android:Metrica",
-	"bugreport",
-	"bugreportz",
-	"debuggerd",
-	"i2cdump",
-	"logwraper",
-	"lpdump",
-	"logname",
-	"lpdump",
-	"lpdumpd",
-	"statsd",
-	"com.android.os.statsd",
 	"ipsec_mon",
 	"com.qti.qualcomm.mstatssystemservice",
 	"traced",

@@ -106,7 +106,8 @@ const char *BannedApps[] =
 	"millet_monitorBINDER",
 	"ru.nspk.mirpay:AppMetrica",
 	"com.avito.android:Metrica",
-	"ip6tables-restore—noflush-w-v"
+	"ip6tables-restore—noflush-w-v",
+	"com.tencent.soter.soterserver"
 };
 const size_t szBannedApps = sizeof(BannedApps) / sizeof(*BannedApps);
 // Export these symbols so the rest of our code can find it.

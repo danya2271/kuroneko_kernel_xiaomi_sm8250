@@ -65,12 +65,12 @@
 *
 ********************************************************/
 #define INPUT_DEV
-#define DEBUG
+//#define DEBUG
 /* #define TEST_RTP */
-#define AW_RAM_UPDATE_DELAY
+//#define AW_RAM_UPDATE_DELAY
 #define ENABLE_PIN_CONTROL
-#define AW_CHECK_RAM_DATA
-#define AW_CHECK_QUAL
+//#define AW_CHECK_RAM_DATA
+//#define AW_CHECK_QUAL
 /*********************************************************
 *
 * enum

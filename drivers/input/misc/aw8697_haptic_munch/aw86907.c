@@ -493,13 +493,8 @@ static int aw86907_container_update(struct aw86907 *aw86907,
 			  aw86907_cont->data[1 + shift]);
 	i = aw86907->ram.ram_shift;
 	while(i < aw86907_cont->len) {
-		if((aw86907_cont->len - i) < AW_RAMDATA_WR_BUFFER_SIZE)
-			len = aw86907_cont->len - i;
-		else
-			len = AW_RAMDATA_WR_BUFFER_SIZE;
 		aw86907_i2c_writes(aw86907, AW86907_REG_RAMDATA,
-				   &aw86907_cont->data[i], len);
-		i += len;
+				   &aw86907_cont->data[i], 0);
 	}
 
 #ifdef AW_CHECK_RAM_DATA

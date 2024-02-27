@@ -2254,7 +2254,7 @@ static enum cpe_svc_result cpe_tgt_tomtom_init(
 		param->tgt_write_ram = cpe_tgt_tomtom_write_RAM;
 		param->tgt_route_notification =
 			cpe_tgt_tomtom_route_notification;
-		param->tgt_set_debug_mode = cpe_tgt_tomtom_set_debug_mode;
+		param->tgt_set_debug_mode = 0;
 		param->tgt_get_cpe_info = cpe_tgt_tomtom_get_cpe_info;
 		param->tgt_deinit = cpe_tgt_tomtom_deinit;
 		param->tgt_voice_tx_lab = cpe_tgt_tomtom_voicetx;
@@ -2693,7 +2693,7 @@ static enum cpe_svc_result cpe_tgt_wcd9335_init(
 		param->tgt_write_ram = cpe_tgt_wcd9335_write_RAM;
 		param->tgt_route_notification =
 			cpe_tgt_wcd9335_route_notification;
-		param->tgt_set_debug_mode = cpe_tgt_wcd9335_set_debug_mode;
+		param->tgt_set_debug_mode = 0;
 		param->tgt_get_cpe_info = cpe_tgt_wcd9335_get_cpe_info;
 		param->tgt_deinit = cpe_tgt_wcd9335_deinit;
 		param->tgt_voice_tx_lab = cpe_tgt_wcd9335_voicetx;

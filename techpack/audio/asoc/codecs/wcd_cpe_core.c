@@ -1920,7 +1920,7 @@ struct wcd_cpe_core *wcd_cpe_init(const char *img_fname,
 
 	core->component = params->component;
 	core->dev = params->component->dev;
-	core->cpe_debug_mode = params->dbg_mode;
+	core->cpe_debug_mode = 0;
 
 	core->cdc_info.major_version = params->cdc_major_ver;
 	core->cdc_info.minor_version = params->cdc_minor_ver;

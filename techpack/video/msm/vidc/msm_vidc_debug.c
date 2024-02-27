@@ -17,7 +17,7 @@ EXPORT_SYMBOL(msm_vidc_debug);
 bool msm_vidc_lossless_encode = !true;
 EXPORT_SYMBOL(msm_vidc_lossless_encode);
 
-int msm_vidc_fw_debug_mode = HFI_DEBUG_MODE_QUEUE;
+int msm_vidc_fw_debug_mode = 0;
 bool msm_vidc_fw_coverage = !true;
 bool msm_vidc_thermal_mitigation_disabled = !true;
 int msm_vidc_clock_voting = !1;

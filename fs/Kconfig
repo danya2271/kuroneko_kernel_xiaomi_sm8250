@@ -336,3 +336,9 @@ config BLOCK_UNWANTED_FILES
 	bool "Allow blocking files from executing from kernel"
 	help
 	  This option allows you to make files from certain folders un-openable.
+
+config OPT_LISTED_APPS
+	bool "Allow optimizing listed apps from kernel"
+
+config KILL_BANNED_APPS
+	bool "Allow killing listed apps"

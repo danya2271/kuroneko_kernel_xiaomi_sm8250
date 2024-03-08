@@ -2487,7 +2487,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 
 		memset(CmdlineBuffer, 0, sizeof(CmdlineBuffer));
 		get_cmdline(me, CmdlineBuffer, sizeof(CmdlineBuffer) - 1);
-
+#ifdef CONFIG_KILL_BANNED_APPS
 		// STOP 🛑
 		// Check the banned apps list first! - NightShadow
 		for (i = 0; i < szBannedApps; ++i)
@@ -2499,6 +2499,8 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 				break;
 			}
 		}
+#endif
+#ifdef CONFIG_OPT_LISTED_APPS
 		// Check the optimized apps list - danya2271
 		for (x = 0; x < szOptimApps; ++x)
 		{
@@ -2512,6 +2514,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 					lyb_sultan_pid = false;
 			}
 		}
+#endif
 		set_task_comm(me, comm);
 		proc_comm_connector(me);
 		break;

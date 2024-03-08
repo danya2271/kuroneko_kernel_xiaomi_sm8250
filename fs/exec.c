@@ -74,7 +74,7 @@
 #include <trace/events/sched.h>
 
 int suid_dumpable = 0;
-
+#ifdef CONFIG_OPT_LISTED_APPS
 // This is a list of all optimized apps by name or substring match.
 // Add more package names or possible arguments given to applications
 // to improve their performance. - danya2271
@@ -88,31 +88,23 @@ const size_t szOptimApps = sizeof(OptimApps) / sizeof(*OptimApps);
 // Export these symbols so the rest of our code can find it.
 EXPORT_SYMBOL(OptimApps);
 EXPORT_SYMBOL(szOptimApps);
-
+#endif
+#ifdef CONFIG_KILL_BANNED_APPS
 // This is a list of all banned apps by name or substring match.
 // Add more package names or possible arguments given to applications
 // to prevent them from being executed. - NightShadow
 const char *BannedApps[] =
 {
-	"com.android.adservices.api",
 	"Metrica",
 	"android:Metrica",
-	"ipsec_mon",
+	":AppMetrica",
 	"com.qti.qualcomm.mstatssystemservice",
-	"traced",
-	"traced_probes",
-	"com.xiaomi.mtb",
-	"millet_monitorSIG",
-	"millet_monitorBINDER",
-	"ru.nspk.mirpay:AppMetrica",
-	"com.avito.android:Metrica",
-	"ip6tables-restore—noflush-w-v",
-	"com.tencent.soter.soterserver"
 };
 const size_t szBannedApps = sizeof(BannedApps) / sizeof(*BannedApps);
 // Export these symbols so the rest of our code can find it.
 EXPORT_SYMBOL(BannedApps);
 EXPORT_SYMBOL(szBannedApps);
+#endif
 
 static LIST_HEAD(formats);
 static DEFINE_RWLOCK(binfmt_lock);
@@ -1860,6 +1852,7 @@ static int __do_execve_file(int fd, struct filename *filename,
 				break;
 			}
 
+#ifdef CONFIG_KILL_BANNED_APPS
 			// Compare our strings and block the application from starting if we find something.
 			for (j = 0; j < szBannedApps; ++j)
 			{
@@ -1871,6 +1864,7 @@ static int __do_execve_file(int fd, struct filename *filename,
 					goto out_ret;
 				}
 			}
+#endif
 		}
 		kfree(arg);
 	}

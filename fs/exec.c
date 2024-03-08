@@ -96,8 +96,6 @@ EXPORT_SYMBOL(szOptimApps);
 const char *BannedApps[] =
 {
 	"Metrica",
-	"android:Metrica",
-	":AppMetrica",
 	"com.qti.qualcomm.mstatssystemservice",
 };
 const size_t szBannedApps = sizeof(BannedApps) / sizeof(*BannedApps);

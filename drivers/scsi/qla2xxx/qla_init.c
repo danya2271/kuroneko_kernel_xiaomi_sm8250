@@ -891,14 +891,6 @@ int qla24xx_async_gnl(struct scsi_qla_host *vha, fc_port_t *fcport)
 	unsigned long flags;
 	u16 *mb;
 
-	if (IS_SESSION_DELETED(fcport)) {
-		ql_log(ql_log_warn, vha, 0xffff,
-		       "%s: %8phC is being delete - not sending command.\n",
-		       __func__, fcport->port_name);
-		fcport->flags &= ~FCF_ASYNC_ACTIVE;
-		return rval;
-	}
-
 	if (!vha->flags.online || (fcport->flags & FCF_ASYNC_SENT))
 		return rval;
 
@@ -1129,15 +1121,8 @@ int qla24xx_async_gpdb(struct scsi_qla_host *vha, fc_port_t *fcport, u8 opt)
 	struct port_database_24xx *pd;
 	struct qla_hw_data *ha = vha->hw;
 
-	if (IS_SESSION_DELETED(fcport)) {
-		ql_log(ql_log_warn, vha, 0xffff,
-		       "%s: %8phC is being delete - not sending command.\n",
-		       __func__, fcport->port_name);
-		fcport->flags &= ~FCF_ASYNC_ACTIVE;
-		return rval;
-	}
-
-	if (!vha->flags.online || fcport->flags & FCF_ASYNC_SENT) {
+	if (!vha->flags.online || (fcport->flags & FCF_ASYNC_SENT) ||
+	    fcport->loop_id == FC_NO_LOOP_ID) {
 		ql_log(ql_log_warn, vha, 0xffff,
 		    "%s: %8phC - not sending command.\n",
 		    __func__, fcport->port_name);

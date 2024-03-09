@@ -1107,10 +1107,8 @@ static bool is_alive(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
 		set_sbi_flag(sbi, SBI_NEED_FSCK);
 	}
 
-	if (f2fs_check_nid_range(sbi, dni->ino)) {
-		f2fs_put_page(node_page, 1);
+	if (f2fs_check_nid_range(sbi, dni->ino))
 		return false;
-	}
 
 	if (IS_INODE(node_page)) {
 		base = offset_in_addr(F2FS_INODE(node_page));

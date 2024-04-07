@@ -203,12 +203,18 @@ static int dsi_ctrl_debugfs_init(struct dsi_ctrl *dsi_ctrl,
 	struct dentry *dir, *state_file, *reg_dump;
 	char dbg_name[DSI_DEBUG_NAME_LEN];
 
-	if (!dsi_ctrl) {
+	if (!dsi_ctrl || !parent) {
 		DSI_CTRL_ERR(dsi_ctrl, "Invalid params\n");
 		return -EINVAL;
 	}
 
-	dsi_ctrl_debugfs_init(dsi_ctrl, parent);
+	dir = debugfs_create_dir(dsi_ctrl->name, parent);
+	if (IS_ERR_OR_NULL(dir)) {
+		rc = PTR_ERR(dir);
+		DSI_CTRL_ERR(dsi_ctrl, "debugfs create dir failed, rc=%d\n",
+				rc);
+		goto error;
+	}
 
 	state_file = debugfs_create_file("state_info",
 					 0444,

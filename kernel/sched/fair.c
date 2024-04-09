@@ -6089,8 +6089,7 @@ static unsigned long source_load(int cpu, int type)
 
 	if (type == 0 || !sched_feat(LB_BIAS))
 		return total;
-
-	return min(rq->cpu_load[type-1], total);
+	return total;
 }
 
 /*
@@ -6104,8 +6103,7 @@ static unsigned long target_load(int cpu, int type)
 
 	if (type == 0 || !sched_feat(LB_BIAS))
 		return total;
-
-	return max(rq->cpu_load[type-1], total);
+	return total;
 }
 
 static unsigned long cpu_avg_load_per_task(int cpu)
@@ -6213,8 +6211,6 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
 	s64 this_eff_load, prev_eff_load;
 	unsigned long task_load;
 
-	this_eff_load = target_load(this_cpu, sd->wake_idx);
-
 	if (sync) {
 		unsigned long current_load = task_h_load(current);
 
@@ -6231,7 +6227,6 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
 		this_eff_load *= 100;
 	this_eff_load *= capacity_of(prev_cpu);
 
-	prev_eff_load = source_load(prev_cpu, sd->wake_idx);
 	prev_eff_load -= task_load;
 	if (sched_feat(WA_BIAS))
 		prev_eff_load *= 100 + (sd->imbalance_pct - 100) / 2;
@@ -6382,13 +6377,9 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 	unsigned long this_runnable_load = ULONG_MAX;
 	unsigned long min_avg_load = ULONG_MAX, this_avg_load = ULONG_MAX;
 	unsigned long most_spare = 0, this_spare = 0;
-	int load_idx = sd->forkexec_idx;
 	int imbalance_scale = 100 + (sd->imbalance_pct-100)/2;
 	unsigned long imbalance = scale_load_down(NICE_0_LOAD) *
 				(sd->imbalance_pct-100) / 100;
-
-	if (sd_flag & SD_BALANCE_WAKE)
-		load_idx = sd->wake_idx;
 
 	do {
 		unsigned long load, avg_load, runnable_load;
@@ -6413,11 +6404,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 		max_spare_cap = 0;
 
 		for_each_cpu(i, sched_group_span(group)) {
-			/* Bias balancing toward CPUs of our domain */
-			if (local_group)
-				load = source_load(i, load_idx);
-			else
-				load = target_load(i, load_idx);
 
 			runnable_load += load;
 
@@ -9607,20 +9593,6 @@ static inline int get_sd_load_idx(struct sched_domain *sd,
 					enum cpu_idle_type idle)
 {
 	int load_idx;
-
-	switch (idle) {
-	case CPU_NOT_IDLE:
-		load_idx = sd->busy_idx;
-		break;
-
-	case CPU_NEWLY_IDLE:
-		load_idx = sd->newidle_idx;
-		break;
-	default:
-		load_idx = sd->idle_idx;
-		break;
-	}
-
 	return load_idx;
 }
 
@@ -9907,7 +9879,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
 		if (cpu_isolated(i))
 			continue;
 
-		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq, false))
+		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq))
 			env->flags |= LBF_NOHZ_AGAIN;
 
 		/* Bias balancing toward CPUs of our domain: */
